@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Juliana Alves">
+    <title>Aplicativo</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="./script.js" defer></script>
+</head>
+
+<body>
+    <main>
+        <h1>Calculadora IMC</h1>
+        <section>
+            <h2>Cadastro de Informações</h2>
+
+            <form method="post" onsubmit="CalcularIMC(event)">
+                <!-- //responsável pelo envio de informações// -->
+
+                <div class="campo-forms">
+                    <label for="nome">Nome</label>
+                    <input type="text" name="campo-nome" id="name" placeholder="Insira seu nome completo">
+                </div>
+
+                <div class="campo-forms">
+                    <label for="altura">Altura</label>
+                    <input type="number" name="campo-atura" id="height" placeholder="Insira sua altura.Ex: 1.85">
+                </div>
+
+                <div class="campo-forms">
+                    <label for="peso">Peso</label>
+                    <input type="number" name="campo-peso" id="weight" placeholder="Insira seu peso em Kg.Ex:85">
+                </div>
+
+                <div class="conjunto-botoes">
+                    <button type="reset">Cancelar</button>
+                    <button type="submit">Calcular</button>
+                </div>
+                <!--Construção da Tabela-->
+            </form>
+        </section>
+                <section>
+                    <h2>Usuários Cadastrados</h2>
+                    <table>
+                        <caption>Tabela de Usuário</caption>
+                        <thead>
+                            <tr>
+                                <th>Nome</th>
+                                <th>Altura</th>
+                                <th>Peso</th>
+                                <th>Valor de IMC</th>
+                                <th>Classificação do IMC</th>
+                                <th>Data de Cadastro</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody id="corpo-tabela"></tbody>
+                    </table>
+                    <button class="botao-tabela" onclick="deletarRegistro()">
+                        Limpar Valores
+                    </button>
+                    </section>
+    </main>
+</body>
+
+</html>
