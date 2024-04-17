@@ -1,131 +1,143 @@
-///imc
-///Capturar os valores  -ok
-// calcular-ok
-/// gerar classificação do IMC-ok
-// organizar as informações
-//salvar os dados
-//Ler a lista com  os dados
-// Renderizar o conteúdo no HTML(tabela)
-//Botão de limpar os registros(Clear(LocalStorage))
-function CalcularValores(event){
-    //responsável por chamar todas as funções
+//IMC
+//1. capturar valores - OK
+//2. calcular o IMC - OK
+//3. gerar classificação do IMC - OK
+//4. organizar as informações - Ok
+//5. salvar os dados na lista - OK
+//6. Ler a lista com os dados - OK
+//7. Renderizar o conteúdo no HTML(tabela) - OK
+//8. Botão de limpar os registros (Clear (LocalStorage))
+
+//responsável por chamar todas as outras funções
+function CalcularValores(event) {
     event.preventDefault();
+
     let dadosUsuario = CapturarValores();
 
-    let imc= CalcularIMC(dadosUsuario.altura, dadosUsuario.peso);
+    let imc = CalcularImc(dadosUsuario.altura, dadosUsuario.peso);
 
-    let clasificacao= ClassificarIMC(imc);
+    let classificacao = ClassificarImc(imc);
 
-    let dadosUsuarioCompleto= OrganizarDados(dadosUsuario,imc,clasificacao);
+    let dadosUsuariosCompleto  = OrganizarDados(dadosUsuario, imc, classificacao);
 
-     CadastroUsuario(dadosUsuarioCompleto);
+    CadastrarUsuario(dadosUsuariosCompleto);
 
     window.location.reload();
-
 }
 
-function CapturarValores(){
-    const nome= document.getElementById('name').value;
-    const altura=document.getElementById('height').value;
-    const peso=document.getElementById('weight').value;
+function CapturarValores() {
+    const nome = document.getElementById('name').value;
+    const altura = document.getElementById('height').value;
+    const peso = document.getElementById('weight').value;
 
     const dadosUsuario = {
         nome: nome,
         altura: altura,
         peso: peso
-
     }
+
     return dadosUsuario;
 }
-function CalcularIMC(altura,peso){
-    const imc= peso/(altura*altura)
+
+function CalcularImc(altura, peso) {
+    const imc = peso / (altura * altura)
+
     return imc
 }
-function ClassificarIMC(imc){
-    if (imc<18.5){
-        return "Abaixo do peso"
-    }else if(imc<25){
-        return "Peso normal"
-    }else if(imc<30){
-        return "Sobrepeso"
-    }else{
-        return"Obesidade"
-    }
 
+function ClassificarImc(imc) {
+    if (imc < 18.5) {
+        return " abaixo do peso! "
+    } else if (imc < 25) {
+        return "peso normal!"
+    } else if (imc < 30) {
+        return "sobrepeso"
+    } else {
+        return "obesidade"
+    }
 }
-function OrganizarDados(dadosUsuario,valorImc,classificacaoImc){
-    const dataHoraAtual=Intl.DateTimeFormat('pt-BR',{timeStyle: 'long', dateStyle: 'short'}).format(Date.now())
-    const dadosUsuarioCompleto ={
+
+function OrganizarDados(dadosUsuario, valorImc, classificacaoImc) {
+
+    const dataHoraAtual = Intl.DateTimeFormat('pt-BR', { timeStyle: 'long', dateStyle: 'short' }).format(Date.now());
+
+    const dadosUsuarioCompleto = {
         ...dadosUsuario,
         imc: valorImc.toFixed(2),
-        classificacaoImc:classificacaoImc,
+        classificacaoImc: classificacaoImc,
         dataCadastro: dataHoraAtual
-
-    }
-     return dadosUsuarioCompleto
-}
-function CadastroUsuario(usuario){
-    //CRIA UM ARRAY VAZIO PARA ARMAZENAR VALORES DE USUÁRIO
-    let listUsuario =[];
-  if (localStorage.getItem("usuariosCadastrados")){
-    //Se sim, eu guardo as informações do array
-    listUsuario = JSON.parse(localStorage.getItem("usuariosCadastrados"));
-  }
-
-//cadastrar usuário dentro do array
-listUsuario.push(usuario)
-//caso contrário, eu crio um novo item no localStorage
-//stringfy=>objeto para JSON
-localStorage.setItem("usuariosCadastrados", JSON.stringify(listUsuario))
-}
-function carregarUsuario(){
-
-    let listUsuario=[];
-
-    if(localStorage.getItem("usuariosCadastrados")){
-        listUsuario= JSON.parse(localStorage.getItem("usuariosCadastrados"))
     }
 
-    if(listUsuario.length == 0){
+    return dadosUsuarioCompleto;
+}
+
+function CadastrarUsuario(usuario) {
+    //cria um array vazio para armazenar os valores do usuário 
+    let listaUsuario = [];
+
+    //verifica se dentro do localStorage eu tenho as informações do usuário
+    if (localStorage.getItem("usuariosCadastrados")) {
+        //se sim, eu guardo as informações dentro do array
+        //parse => de JSON para object
+        listaUsuario = JSON.parse(localStorage.getItem("usuariosCadastrados"));
+    }
+
+    //cadastrar usuário dentro do array
+    listaUsuario.push(usuario);
+
+    //casao contrário, eu crio um novo item no localStorage
+    //stringfy => objeto para JSON
+    localStorage.setItem("usuariosCadastrados", JSON.stringify(listaUsuario))
+}
+
+function carregarUsuarios() {
+    let listaUsuario = [];
+
+    if (localStorage.getItem("usuariosCadastrados")) {
+        listaUsuario = JSON.parse(localStorage.getItem("usuariosCadastrados"));
+    }
+
+    if (listaUsuario.length == 0) {
         let tabela = document.getElementById('corpo-tabela');
 
-        tabela.innerHTML= `
-        <tr class='linha-mensagem'>
-           <td colspan='6'> Nenhum Usuário Cadastrado </td>
-        </tr>  
-     `
-     
-    }else{
-        montarTabela(listUsuario)
+        tabela.innerHTML = `
+            <tr class="linha-mensagem"> 
+                <td colspan='6' > Nenhum usuário cadastrado </td>
+            </tr>
+        `
+
+    } else {
+        montarTabela(listaUsuario)
     }
 }
 
-window.addEventListener('DOMContentLoaded', () => carregarUsuario())
+window.addEventListener('DOMContentLoaded', () => carregarUsuarios())
 
-function montarTabela(listaDeCadastrados){
+function montarTabela(listaDeCadastrados) {
     let tabela = document.getElementById('corpo-tabela')
-   
-    let template='';
-    
+
+    let template = "";
+
     listaDeCadastrados.forEach(pessoa => {
-        template +=`
-     <tr>
-         <td data-cell="nome">${pessoa.nome}</td>
-         <td data-cell="altura">${pessoa.altura}</td>
-         <td data-cell="peso">${pessoa.peso}</td>
-         <td data-cell="imc">${pessoa.imc}</td>
-         <td data-cell="clasificacao">${pessoa.classificacaoImc}</td>
-         <td data-cell="dataCadastro">${pessoa.dataCadastro}</td>
-    </tr>
-     `    
+        template += `
+            <tr>
+                <td data-cell="nome" > ${pessoa.nome} </td>
+                <td data-cell="altura" > ${pessoa.altura} </td>
+                <td data-cell="peso" > ${pessoa.peso} </td>
+                <td data-cell="imc"> ${pessoa.imc} </td>
+                <td data-cell="classificacao"> ${pessoa.classificacaoImc} </td>
+                <td data-cell="dataCadastro"> ${pessoa.dataCadastro} </td>
+            </tr>
+        `
     });
 
-    tabela.innerHTML=template;
+    tabela.innerHTML = template;
 }
 
-function deletarRegistros(){
-    let listUsuario=[];
-    listUsuario.splice(dadosUsuario)
+function deletarRegistros() {
+    // localStorage.removeItem("usuariosCadastrados");
 
-    localStorage.removeItemItem("dadosUsuario", JSON.stringify(listUsuario))
-    }
+    localStorage.clear();
+    window.location.reload();
+}
+
